@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #0084f6;
+}
+
+.active {
+  background-color: #0084f6;
+}
+
+.row
+{
+  width:100%;
+  height:15vw;
+  padding-top:10px;
+  /* background: red; */
+}
+
+#col1
+{
+  width:20%;
+  height:100%;
+  /* background: green; */
+  float: left;
+}
+#col2
+{
+  width:70%;
+  height:100%;
+  /* background: yellow; */
+  float: left;
+}
+
+/* cyrillic-ext */
+@font-face {
+  font-family: 'Noto Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/notosans/v14/o-0IIpQlx3QUlC5A4PNr6DRAW_0.woff2) format('woff2');
+}
+ul,#col2
+{
+  font-family:'Noto Sans',sans-serif;
+}
+#demoCanvas
+{
+background:grey;
+}
+</style>
+</head>
+<body>
+
+<ul>
+  <li><a href="index.html">Home</a></li>
+  <li><a class="active"  href="e1.html">Övning 1</a></li>
+  <li><a href="e2.html">Övning 2</a></li>
+</ul>
+<h1>Geometriska former</h1>
+<canvas id="demoCanvas"  width="1240" height="400">
+  alternate content
+</canvas>
+</body>
+<script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+<script>
+var stage = new createjs.Stage("demoCanvas");
+var current_last_event_geo;
+stage.enableMouseOver();
+
+var array_activebox=[];
+var array_activebox1=[];
+
+
+var current_last_event;
+var isDragging = false;
+
+var circle = new createjs.Shape();
+circle.graphics.beginFill('red').beginStroke('black').drawCircle(0, 0, 40);
+circle.x=100;
+circle.y=100;
+circle.centerx=0;
+circle.centery=0;
+
+circle.on('mousedown', e => {
+  moveClick(e);
+});
+
+
+
+var rect = new createjs.Shape();
+rect.graphics.beginFill('blue').beginStroke('black').drawRect(0, 0, 100, 100);
+rect.x=200;
+rect.y=50;
+rect.centerx=50;
+rect.centery=50;
+
+
+rect.on('mousedown', e => {
+  moveClick(e);
+});
+
+stage.addChild(circle,rect);
+stage.update();
+
+
+
+function moveClick(e)
+{
+  isDragging = false;
+  current_last_event_geo=e.currentTarget;
+  stage.addEventListener('stagemousemove', event => {
+    stageMoveStart(event);
+  });
+  stage.addEventListener('stagemouseup', event => {
+    stageMoveEnd(event);
+  });
+  stage.update();
+}
+
+
+function stageMoveStart(event) {
+    if (isDragging == false) {
+    document.body.style.cursor = "move";
+    if (current_last_event_geo && current_last_event_geo != "") {
+
+    var x_pos = event.stageX;
+    var y_pos = event.stageY;
+    var pt = stage.globalToLocal(x_pos, y_pos);
+
+    var centerx = current_last_event_geo.centerx;
+    var centery =current_last_event_geo.centery;
+    current_last_event_geo.x = pt.x - centerx;
+    current_last_event_geo.y = pt.y - centery;
+    }
+    }
+    stage.update();
+  }
+
+
+  function stageMoveEnd() {
+    document.body.style.cursor = "default";
+    if (isDragging == false) {
+      isDragging = true;
+    }
+
+    stage.removeEventListener("stagemousemove", stageMoveStart, true);
+    stage.removeEventListener("stagemouseup", stageMoveEnd, true);
+    stage.removeAllEventListeners();
+
+    stage.update();
+  }
+
+
+</script>
+</html>
